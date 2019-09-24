@@ -2,7 +2,7 @@
 
 Christian Ritter
 
-* HAN by Iglovikov 18b, implementation of https://github.com/ternaus/TernausNetV2
+* U-Net architecture with WideRes-Net38, by Iglovikov 18b, implementation of https://github.com/ternaus/TernausNetV2
 
 ## Comments
 
@@ -31,3 +31,5 @@ preform again maxpooling on the input for these modules during forward pass?
 
 
 ## What needs to be done
+
+* Implement loss calculation and learning based on description in paper
