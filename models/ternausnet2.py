@@ -97,6 +97,7 @@ class TernausNetV2(nn.Module):
         else:
             norm_act = kwargs['norm_act']
 
+        # window size of 2, stride=2
         self.pool = nn.MaxPool2d(2, 2)
 
         # setup widerResnet as encoder,
@@ -136,6 +137,8 @@ class TernausNetV2(nn.Module):
 
         # encoder
         conv1 = self.conv1(x)
+
+        # the widenet encoder.modX layers contain already a pooling layer! why again pooling?
         conv2 = self.conv2(self.pool(conv1))
         conv3 = self.conv3(self.pool(conv2))
         conv4 = self.conv4(self.pool(conv3))

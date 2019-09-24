@@ -17,9 +17,17 @@ Christian Ritter
 
 * Tensorboard requires pip install tensorflow==1.4.0, does not work
 * Modified loading of model to CPU via map_location=torch.device('cpu') for now..
+* Maxpooling is performed in the WideResnet-38 modules before into into ResNet layers. Why does authors
+preform again maxpooling on the input for these modules during forward pass?
+* There is no information about data preparation to create the images in the code. Paper describes those though.
+* Loss calculation and updating of the weights are not included in the code. Paper describes those
 
 
 ## Input Data
+
+* as described in Iglovikov18b paper
+* RGB : 3 bands
+* MUL : 8 bands multispectral
 
 
 ## What needs to be done

@@ -93,6 +93,9 @@ def pad(img, pad_size=32):
         x_min_pad = int(x_pad / 2)
         x_max_pad = x_pad - x_min_pad
 
+    # Forms a border around an image,
+    # cv2.BORDER_REFLECT_101 - Border will be mirror reflection of the border elements, like this:
+    # gfedcb|abcdefgh|gfedcba
     img = cv2.copyMakeBorder(img, y_min_pad, y_max_pad, x_min_pad, x_max_pad, cv2.BORDER_REFLECT_101)
 
     return img, (x_min_pad, y_min_pad, x_max_pad, y_max_pad)
@@ -139,7 +142,7 @@ def load_image(file_name_rgb, file_name_tif):
     """
 
     :param file_name_rgb: RGB image
-    :param file_name_tif: ?? image
+    :param file_name_tif: MUL image with extra channels
     :return:
     """
 
@@ -175,15 +178,18 @@ model = get_model('weights/deepglobe_buildings.pt')
 # %%
 
 img_transform = Compose([
+    # Convert a PIL Image or numpy.ndarray to tensor.
     ToTensor(),
+    # Normalize a tensor image with mean and standard deviation for 11 bands as in paper
     Normalize(mean=[0.485, 0.456, 0.406, 0, 0, 0, 0, 0, 0, 0, 0],
               std=[0.229, 0.224, 0.225, 1, 1, 1, 1, 1, 1, 1, 1])
 ])
 
 # %%
 
-file_name_rgb = Path('img') / 'RGB-PanSharpen_AOI_4_Shanghai_img6917.tif'
-file_name_tif = Path('img') / 'MUL-PanSharpen_AOI_4_Shanghai_img6917.tif'
+# example files
+file_name_rgb = Path('img') / 'RGB-PanSharpen_AOI_4_Shanghai_img6917.tif' #RGB
+file_name_tif = Path('img') / 'MUL-PanSharpen_AOI_4_Shanghai_img6917.tif' #other 8 bands
 
 # %%
 
@@ -191,20 +197,27 @@ img = load_image(file_name_rgb, file_name_tif)
 
 # %%
 
+# show RGB channel image
 imshow(img[:, :, :3].astype(np.uint8))
 
 # %%
 
-# Network contains 5 maxpool layers => input should be divisible by 2**5 = 32 => we pad input image and mask
+# Network contains 5 maxpool layers (see forward()) => input should be divisible by 2**5 = 32 => we pad input image and mask
 img, pads = pad(img)
 
 # %%
 
-input_img = torch.unsqueeze(img_transform(img / (2 ** 8 - 1)).cuda(), dim=0)
+#input_img = torch.unsqueeze(img_transform(img / (2 ** 8 - 1)).cuda(), dim=0)
+input_img = torch.unsqueeze(img_transform(img / (2 ** 8 - 1)), dim=0)
+
+input_img.shape
 
 # %%
 
-prediction = torch.sigmoid(model(input_img)).data[0].cpu().numpy()
+input_img2 = torch.Tensor(np.ones((1, 11, 672, 672)))
+input_img2.shape
+
+prediction = torch.sigmoid(model(input_img2)).data[0].cpu().numpy()
 
 # %%
 
