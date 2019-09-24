@@ -31,7 +31,7 @@ class WiderResNet(nn.Module):
         if len(structure) != 6:
             raise ValueError("Expected a structure with six values")
 
-        # Initial layers
+        # Initial layer, will not be used in Ternausnet
         self.mod1 = nn.Sequential(OrderedDict([
             ("conv1", nn.Conv2d(3, 64, 3, stride=1, padding=1, bias=False))
         ]))
@@ -45,6 +45,7 @@ class WiderResNet(nn.Module):
             for block_id in range(num):
                 blocks.append((
                     "block%d" % (block_id + 1),
+                    # different structure per block, as channels has 2 or 3 input elements
                     IdentityResidualBlock(in_channels, channels[mod_id], norm_act=norm_act)
                 ))
 
@@ -53,6 +54,7 @@ class WiderResNet(nn.Module):
 
             # Create module
             if mod_id <= 4:
+                # if first 4 groups of blocks, add maxpool
                 self.add_module("pool%d" % (mod_id + 2), nn.MaxPool2d(3, stride=2, padding=1))
             self.add_module("mod%d" % (mod_id + 2), nn.Sequential(OrderedDict(blocks)))
 

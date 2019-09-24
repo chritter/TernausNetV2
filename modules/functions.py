@@ -8,14 +8,18 @@ from torch.autograd.function import once_differentiable
 from torch.utils.cpp_extension import load
 
 _src_path = path.join(path.dirname(path.abspath(__file__)), "src")
-_backend = load(name="inplace_abn",
-                extra_cflags=["-O3"],
-                sources=[path.join(_src_path, f) for f in [
-                    "inplace_abn.cpp",
-                    "inplace_abn_cpu.cpp",
-                    "inplace_abn_cuda.cu"
-                ]],
-                extra_cuda_cflags=["--expt-extended-lambda"])
+
+# Compiles cpp code in src/, laod allows load a PyTorch C++ extension just-in-time (JIT).
+# _backend = load(name="inplace_abn",
+#                 extra_cflags=["-O3"],
+#                 sources=[path.join(_src_path, f) for f in [
+#                     "inplace_abn.cpp",
+#                     "inplace_abn_cpu.cpp",
+#                     "inplace_abn_cuda.cu"
+#                 ]],
+#                 # The nvcc flag '--expt-extended-lambda' allows explicit execution space annotations in a lambda expressio, nvidea CUDA docs
+#                 extra_cuda_cflags=["--expt-extended-lambda"]
+#                 )
 
 # Activation names
 ACT_RELU = "relu"
