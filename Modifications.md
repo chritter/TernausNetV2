@@ -2,7 +2,7 @@
 
 Christian Ritter
 
-* U-Net architecture with WideRes-Net38,  by Iglovikov 18b, implementation of https://github.com/ternaus/TernausNetV2
+* U-Net architecture with WideRes-Net38,   by Iglovikov 18b, implementation of https://github.com/ternaus/TernausNetV2
 
 ## Comments
 
